@@ -1,5 +1,6 @@
 use petgraph::graph::UnGraph;
 use petgraph::prelude::*;
+use petgraph::algo::connected_components;
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
@@ -12,7 +13,7 @@ pub fn load_graph(file_path: &str) -> GraphType {
     let reader = BufReader::new(file);
     let mut graph = UnGraph::<u32, ()>::new_undirected();
 
-    // Track existing nodes
+    //tracking existing nodes
     let mut node_map: HashMap<u32, NodeIndex> = HashMap::new();
 
     for line in reader.lines() {
@@ -25,7 +26,7 @@ pub fn load_graph(file_path: &str) -> GraphType {
             let node1: u32 = nodes[0].parse().unwrap();
             let node2: u32 = nodes[1].parse().unwrap();
 
-            // Add nodes only if they don't already exist
+            //add nodes only if they don't already exist
             let node1_index = *node_map.entry(node1).or_insert_with(|| graph.add_node(node1));
             let node2_index = *node_map.entry(node2).or_insert_with(|| graph.add_node(node2));
 
@@ -64,4 +65,12 @@ pub fn calculate_degree_centrality(graph: &GraphType) {
             degree
         );
     }
+}
+
+/// Detect and analyze connected components in the graph
+pub fn find_connected_components(graph: &GraphType) {
+    // Calculate the number of connected components
+    let num_components = connected_components(graph);
+
+    println!("Number of connected components: {}", num_components);
 }
