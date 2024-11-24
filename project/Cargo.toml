@@ -1,0 +1,8 @@
+[package]
+name = "youtube_graph_analysis"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+petgraph = "0.6"
+flate2 = "1.0"
