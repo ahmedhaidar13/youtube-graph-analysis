@@ -2,13 +2,13 @@ use std::collections::{HashMap, HashSet};
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 
-/// Graph structure using an adjacency list
+/// structuring graph using an adjacency list
 pub struct Graph {
     adjacency_list: HashMap<u32, HashSet<u32>>,
 }
 
 impl Graph {
-    /// Create a new empty graph
+    ///creates a new empty graph
     pub fn new() -> Self {
         Graph {
             adjacency_list: HashMap::new(),
@@ -27,12 +27,12 @@ impl Graph {
             .insert(node1);
     }
 
-    /// Get the total number of nodes
+    ///Get the total number of nodes
     pub fn node_count(&self) -> usize {
         self.adjacency_list.len()
     }
 
-    /// Get the total number of edges
+    ///Get the total number of edges
     pub fn edge_count(&self) -> usize {
         self.adjacency_list
             .values()
@@ -42,7 +42,7 @@ impl Graph {
     }
 }
 
-/// Load the graph from a file
+/// loading the graph from a file
 pub fn load_graph(file_path: &str) -> Graph {
     let file = File::open(file_path).expect("Failed to open file");
     let reader = BufReader::new(file);
@@ -67,4 +67,53 @@ pub fn load_graph(file_path: &str) -> Graph {
     println!();
 
     graph
+}
+
+/// calculate and display the degree centrality of the graph
+pub fn calculate_degree_centrality(graph: &Graph) {
+    println!("Calculating degree centrality...");
+    let mut degrees: Vec<(u32, usize)> = graph
+        .adjacency_list
+        .iter()
+        .map(|(node, neighbors)| (*node, neighbors.len()))
+        .collect();
+
+    degrees.sort_by(|a, b| b.1.cmp(&a.1)); // Sort by degree in descending order
+
+    println!("Top 10 nodes by degree centrality:");
+    for (i, (node, degree)) in degrees.iter().take(10).enumerate() {
+        println!("Rank {}: Node {} with degree {}", i + 1, node, degree);
+    }
+    println!();
+}
+
+/// detecting and analyzing connected components in the graph
+pub fn find_connected_components(graph: &Graph) {
+    println!("Analyzing connected components...");
+    println!();
+
+    let mut visited = HashSet::new();
+    let mut components = Vec::new();
+
+    for &node in graph.adjacency_list.keys() {
+        if !visited.contains(&node) {
+            let mut component = HashSet::new();
+            let mut stack = vec![node];
+            while let Some(current) = stack.pop() {
+                if visited.insert(current) {
+                    component.insert(current);
+                    if let Some(neighbors) = graph.adjacency_list.get(&current) {
+                        stack.extend(neighbors);
+                    }
+                }
+            }
+            components.push(component);
+        }
+    }
+
+    println!("Number of connected components: {}", components.len());
+    if let Some(largest) = components.iter().max_by_key(|c| c.len()) {
+        println!("Largest connected component size: {}", largest.len());
+    }
+    println!();
 }
