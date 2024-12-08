@@ -4,7 +4,7 @@ use std::io::{BufRead, BufReader};
 
 /// structuring graph using an adjacency list
 pub struct Graph {
-    adjacency_list: HashMap<u32, HashSet<u32>>,
+    pub adjacency_list: HashMap<u32, HashSet<u32>>,
 }
 
 impl Graph {
@@ -27,12 +27,12 @@ impl Graph {
             .insert(node1);
     }
 
-    ///Get the total number of nodes
+    ///total number of nodes
     pub fn node_count(&self) -> usize {
         self.adjacency_list.len()
     }
 
-    ///Get the total number of edges
+    /// total number of edges
     pub fn edge_count(&self) -> usize {
         self.adjacency_list
             .values()
@@ -42,7 +42,7 @@ impl Graph {
     }
 }
 
-/// loading the graph from a file
+/// start by loading the graph from a file
 pub fn load_graph(file_path: &str) -> Graph {
     let file = File::open(file_path).expect("Failed to open file");
     let reader = BufReader::new(file);
@@ -78,7 +78,7 @@ pub fn calculate_degree_centrality(graph: &Graph) {
         .map(|(node, neighbors)| (*node, neighbors.len()))
         .collect();
 
-    degrees.sort_by(|a, b| b.1.cmp(&a.1)); // Sort by degree in descending order
+    degrees.sort_by(|a, b| b.1.cmp(&a.1));
 
     println!("Top 10 nodes by degree centrality:");
     for (i, (node, degree)) in degrees.iter().take(10).enumerate() {
@@ -87,7 +87,7 @@ pub fn calculate_degree_centrality(graph: &Graph) {
     println!();
 }
 
-/// detecting and analyzing connected components in the graph
+///a function which detects and analyzes connected components in the graph
 pub fn find_connected_components(graph: &Graph) {
     println!("Analyzing connected components...");
     println!();
