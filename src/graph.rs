@@ -57,8 +57,17 @@ pub fn load_graph(file_path: &str) -> Graph {
         if nodes.len() == 2 {
             let node1 = nodes[0].parse::<u32>().unwrap();
             let node2 = nodes[1].parse::<u32>().unwrap();
+
+            // implementing data cleaning here, removing duplicate edges
+            if node1 == node2 {
+                continue;
+            }
             graph.add_edge(node1, node2);
         }
+    }
+
+    for neighbors in graph.adjacency_list.values_mut() {
+        *neighbors = neighbors.iter().cloned().collect();
     }
 
     println!("Graph loaded successfully!");
